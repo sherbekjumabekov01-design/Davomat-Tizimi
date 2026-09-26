@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Davomat Tizimi - Talabalar va o'qituvchilar davomatini samarali va tezkor boshqarish platformasi">
+  <title>Davomat Tizimi - Boshqaruv Paneli</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon">D</div>
+        <div class="brand-info">
+          <h2>Davomat Tizimi</h2>
+          <span>Boshqaruv markazi</span>
+        </div>
+        <button class="mobile-sidebar-close" onclick="closeSidebar()" aria-label="Menyuni yopish" title="Yopish">✕</button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Asosiy Menyular</div>
+        <a class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')" title="Bosh sahifa">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          <span>Bosh sahifa</span>
+        </a>
+        <a class="nav-item" data-view="attendance" onclick="switchView('attendance')" title="Davomat olish">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+          <span>Davomat olish</span>
+        </a>
+        
+        <div class="nav-label" style="margin-top:0.75rem;">Ma'lumotlar</div>
+        <a class="nav-item" data-view="students" onclick="switchView('students')" title="Talabalar">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <span>Talabalar</span>
+        </a>
+        <a class="nav-item" data-view="teachers" onclick="switchView('teachers')" title="O'qituvchilar">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          <span>O'qituvchilar</span>
+        </a>
+        <a class="nav-item" data-view="groups" onclick="switchView('groups')" title="Guruhlar">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          <span>Guruhlar</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-badge" onclick="openProfileModal()" style="cursor:pointer;" title="Profil va parolni o'zgartirish">
+          <div class="user-avatar" id="currentUserAvatar">A</div>
+          <div class="user-info">
+            <div class="user-name" id="currentUserName">Administrator</div>
+            <div class="user-role" id="currentUserRole">Boshqaruvchi</div>
+          </div>
+          <button class="btn-logout" id="btnLogout" title="Chiqish" onclick="event.stopPropagation()">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      <!-- Header -->
+      <header class="app-header">
+        <div style="display:flex; align-items:center; gap:0.85rem;">
+          <button class="sidebar-toggle-btn mobile-toggle" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Menyuni ochish/yig'ish">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+          <div class="header-title">
+            <h1 id="pageHeadingTitle">Bosh sahifa</h1>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="date-pill" id="currentDateDisplay">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <span id="currentDateText">23-Sentabr, 2026</span>
+          </div>
+          <button class="btn btn-primary" onclick="openAddStudentModal()">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            + Talaba qo'shish
+          </button>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <div class="content-container">
+
+        <!-- 1. DASHBOARD VIEW -->
+        <section id="view-dashboard" class="view-section active">
+          <!-- Stats Grid -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Jami Talabalar</span>
+                <div class="stat-icon primary">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statTotalStudents">0</div>
+              <div class="stat-subtext">Faol o'quvchilar soni</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">O'qituvchilar</span>
+                <div class="stat-icon purple">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statTotalTeachers">0</div>
+              <div class="stat-subtext">Pedagogik tarkib</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Guruhlar</span>
+                <div class="stat-icon warning">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statTotalGroups">0</div>
+              <div class="stat-subtext">Mavjud akademik guruhlar</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Bugungi Davomat</span>
+                <div class="stat-icon success">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statTodayRate">0%</div>
+              <div style="width:100%; background:rgba(255,255,255,0.06); height:6px; border-radius:3px; overflow:hidden; margin-top:4px;">
+                <div id="statTodayRateBar" style="width:0%; height:100%; background:var(--status-present); transition:width 1s ease;"></div>
+              </div>
+              <div class="stat-subtext" id="statTodayDetails" style="margin-top:0.25rem; flex-wrap:wrap;">
+                Yuklanmoqda...
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts & Overview Row -->
+          <div class="dashboard-row">
+            <!-- 7-Day Trend Chart -->
+            <div class="card" style="margin-bottom:0;">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <svg width="20" height="20" fill="none" stroke="var(--primary-light)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                  Haftalik davomat dinamikasi
+                </h3>
+                <span style="font-size:0.8rem; color:var(--text-muted);">Oxirgi 7 kun</span>
+              </div>
+              <div class="trend-chart-bar-container" id="trendChartContainer">
+                <div style="color:var(--text-muted); font-size:0.85rem;">Grafik yuklanmoqda...</div>
+              </div>
+            </div>
+
+            <!-- Quick Action Box -->
+            <div class="card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <div class="card-header">
+                  <h3 class="card-title">
+                    <svg width="20" height="20" fill="none" stroke="#F59E0B" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    Tezkor Amallar
+                  </h3>
+                </div>
+                <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6; margin-bottom:1.5rem;">
+                  Guruhlar bo'yicha bugungi davomatni bir bosish bilan to'ldiring, yangi talabalarni tizimga kiriting yoki umumiy hisobotlarni ko'ring.
+                </p>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                <button class="btn btn-primary" onclick="switchView('attendance')">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                  Bugungi davomatni belgilash
+                </button>
+                <div style="display:flex; gap:0.75rem;">
+                  <button class="btn btn-secondary" style="flex:1;" onclick="openAddStudentModal()">+ Talaba</button>
+                  <button class="btn btn-secondary" style="flex:1;" onclick="openAddGroupModal()">+ Guruh</button>
+                  <button class="btn btn-secondary" style="flex:1;" onclick="openAddTeacherModal()">+ O'qituvchi</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Attendance Table -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <svg width="20" height="20" fill="none" stroke="var(--status-present)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                So'nggi qayd etilgan davomatlar
+              </h3>
+              <button class="btn btn-secondary btn-sm" onclick="switchView('attendance')">Barchasini ko'rish</button>
+            </div>
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Talaba</th>
+                    <th>Guruh</th>
+                    <th>Sana</th>
+                    <th>Holat</th>
+                    <th>Izoh / Belgilovchi</th>
+                  </tr>
+                </thead>
+                <tbody id="recentAttendanceTableBody">
+                  <tr><td colspan="5" style="text-align:center; padding:2rem;">Yuklanmoqda...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. ATTENDANCE VIEW (CRM MATRIX) -->
+        <section id="view-attendance" class="view-section">
+          <div style="color:var(--text-muted); text-align:center; padding:3rem;"><span class="spinner"></span> Davomat yuklanmoqda...</div>
+        </section>
+
+        <!-- 3. STUDENTS VIEW -->
+        <section id="view-students" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Talabalar Ro'yxati</h3>
+              <div style="display:flex; gap:0.5rem;">
+                <button class="btn btn-secondary btn-sm" onclick="exportStudentsList()" title="Talabalar ro'yxatini Excel (CSV) formatida yuklab olish">
+                  <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                  Excelga yuklash
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="openAddStudentModal()">
+                  + Yangi talaba qo'shish
+                </button>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="search-input-wrapper">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" class="form-control" id="studentsSearchInput" placeholder="Ism, talaba kodi yoki telefon bo'yicha qidirish..." oninput="loadStudentsView()">
+              </div>
+
+              <div class="filter-select-wrapper">
+                <select class="form-control" id="studentsGroupFilter" onchange="loadStudentsView()">
+                  <option value="">Barcha guruhlar</option>
+                </select>
+              </div>
+
+              <div class="filter-select-wrapper">
+                <select class="form-control" id="studentsStatusFilter" onchange="loadStudentsView()">
+                  <option value="">Barcha holatlar</option>
+                  <option value="Active">Faol</option>
+                  <option value="Frozen">Muzlatilgan</option>
+                  <option value="Dropped">Tashlagan</option>
+                  <option value="Graduated">Bitirgan</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Talaba F.I.Sh.</th>
+                    <th>ID Kod</th>
+                    <th>Guruh</th>
+                    <th>Holati</th>
+                    <th>Telefon</th>
+                    <th>Ota-onasi</th>
+                    <th>Davomat %</th>
+                    <th>Amallar</th>
+                  </tr>
+                </thead>
+                <tbody id="studentsTableBody">
+                  <tr><td colspan="8" style="text-align:center; padding:2rem;">Yuklanmoqda...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. TEACHERS VIEW -->
+        <section id="view-teachers" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">O'qituvchilar Tarkibi</h3>
+              <button class="btn btn-primary btn-sm" onclick="openAddTeacherModal()">
+                + O'qituvchi qo'shish
+              </button>
+            </div>
+
+            <div class="filter-bar">
+              <div class="search-input-wrapper">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" class="form-control" id="teachersSearchInput" placeholder="Ism, fan yoki email bo'yicha qidirish..." oninput="loadTeachersView()">
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>O'qituvchi F.I.Sh.</th>
+                    <th>Mutaxassislik / Fan</th>
+                    <th>Telefon</th>
+                    <th>Biriktirilgan Guruhlar</th>
+                    <th>Amallar</th>
+                  </tr>
+                </thead>
+                <tbody id="teachersTableBody">
+                  <tr><td colspan="6" style="text-align:center; padding:2rem;">Yuklanmoqda...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. GROUPS VIEW -->
+        <section id="view-groups" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Akademik Guruhlar</h3>
+              <button class="btn btn-primary btn-sm" onclick="openAddGroupModal()">
+                + Yangi guruh yaratish
+              </button>
+            </div>
+
+            <div class="groups-cards-grid" id="groupsGridContainer">
+              <div style="color:var(--text-muted); text-align:center; padding:3rem; grid-column:1/-1;">Yuklanmoqda...</div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODALS -->
+
+  <!-- Student Add/Edit Modal -->
+  <div class="modal-backdrop" id="studentModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="studentModalTitle">Yangi talaba qo'shish</h3>
+        <button class="btn-close-modal" onclick="closeModal('studentModal')">✕</button>
+      </div>
+      <form id="studentForm" onsubmit="handleStudentFormSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="studentFormId">
+          <div class="form-group">
+            <label class="form-label">To'liq ismi (F.I.Sh.) *</label>
+            <input type="text" class="form-control" id="studentFormName" required placeholder="Masalan: Sardor Aliyev">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Talaba kodi (ID) *</label>
+            <input type="text" class="form-control" id="studentFormCode" required placeholder="Masalan: STD-21010">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Akademik guruh *</label>
+            <select class="form-control" id="studentFormGroup" required>
+              <option value="">Guruhni tanlang</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Holati (Status)</label>
+            <select class="form-control" id="studentFormStatus">
+              <option value="Active">Faol (O'qimoqda)</option>
+              <option value="Frozen">Muzlatilgan (Akademik ta'til)</option>
+              <option value="Dropped">Tashlagan (O'qishni to'xtatgan)</option>
+              <option value="Graduated">Bitirgan (Kursni tamomlagan)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Telefon raqami</label>
+            <input type="text" class="form-control" id="studentFormPhone" placeholder="+998 90 123 45 67">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ota-onasi F.I.Sh.</label>
+            <input type="text" class="form-control" id="studentFormParentName" placeholder="Masalan: Jamshid Aliyev">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ota-onasi telefon raqami</label>
+            <input type="text" class="form-control" id="studentFormParentPhone" placeholder="+998 91 987 65 43">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Elektron pochta (Email)</label>
+            <input type="email" class="form-control" id="studentFormEmail" placeholder="talaba@example.com">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('studentModal')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Student History Modal -->
+  <div class="modal-backdrop" id="studentHistoryModal">
+    <div class="modal-container" style="max-width:680px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="studentHistoryTitle">Davomat tarixi</h3>
+        <button class="btn-close-modal" onclick="closeModal('studentHistoryModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Sana</th>
+                <th>Guruh</th>
+                <th>Holat</th>
+                <th>Izoh</th>
+              </tr>
+            </thead>
+            <tbody id="studentHistoryTableBody">
+              <tr><td colspan="4" style="text-align:center;">Yuklanmoqda...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('studentHistoryModal')">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Add/Edit Modal -->
+  <div class="modal-backdrop" id="teacherModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="teacherModalTitle">Yangi o'qituvchi</h3>
+        <button class="btn-close-modal" onclick="closeModal('teacherModal')">✕</button>
+      </div>
+      <form id="teacherForm" onsubmit="handleTeacherFormSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="teacherFormId">
+          <div class="form-group">
+            <label class="form-label">F.I.Sh. *</label>
+            <input type="text" class="form-control" id="teacherFormName" required placeholder="Masalan: Alisher Qodirov">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mutaxassislik / Fan *</label>
+            <input type="text" class="form-control" id="teacherFormSubject" required placeholder="Masalan: Dasturlash asoslari">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Elektron pochta</label>
+            <input type="email" class="form-control" id="teacherFormEmail" placeholder="teacher@davomat.uz">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Telefon raqami</label>
+            <input type="text" class="form-control" id="teacherFormPhone" placeholder="+998 90 123 45 67">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dars o'tadigan guruhlari:</label>
+            <div id="teacherGroupsCheckboxList" style="display:flex; flex-direction:column; gap:0.4rem; padding:0.5rem; background:rgba(0,0,0,0.2); border-radius:var(--radius-sm);">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('teacherModal')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Group Add/Edit Modal -->
+  <div class="modal-backdrop" id="groupModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="groupModalTitle">Yangi guruh</h3>
+        <button class="btn-close-modal" onclick="closeModal('groupModal')">✕</button>
+      </div>
+      <form id="groupForm" onsubmit="handleGroupFormSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="groupFormId">
+          <div class="form-group">
+            <label class="form-label">Guruh nomi *</label>
+            <input type="text" class="form-control" id="groupFormName" required placeholder="Masalan: TATU-210">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Yo'nalish / Ta'rif</label>
+            <input type="text" class="form-control" id="groupFormDescription" placeholder="Dasturiy injiniring yo'nalishi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Biriktirilgan o'qituvchi</label>
+            <select class="form-control" id="groupFormTeacherId">
+              <option value="">-- O'qituvchini tanlang --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dars kunlari tartibi</label>
+            <select class="form-control" id="groupFormLessonDaysType">
+              <option value="Odd">Toq kunlar (Dushanba - Chorshanba - Juma)</option>
+              <option value="Even">Juft kunlar (Seshanba - Payshanba - Shanba)</option>
+              <option value="Daily">Har kuni (Dushanba - Juma)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dars vaqti</label>
+            <input type="text" class="form-control" id="groupFormScheduleTime" placeholder="Masalan: Toq kunlar • 14:00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Oylik to'lov narxi</label>
+            <input type="text" class="form-control" id="groupFormPrice" placeholder="Masalan: 695 000 UZS">
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Bosqich (Kurs)</label>
+              <input type="number" class="form-control" id="groupFormCourseYear" min="1" max="6" value="1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Xona sig'imi</label>
+              <input type="number" class="form-control" id="groupFormCapacity" min="1" max="100" value="20">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Xona / Auditoriya raqami</label>
+            <input type="text" class="form-control" id="groupFormRoom" placeholder="304-xona">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('groupModal')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- User Profile & Change Password Modal -->
+  <div class="modal-backdrop" id="profileModal">
+    <div class="modal-container" style="max-width:540px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Foydalanuvchi Profili & Xavfsizlik</h3>
+        <button class="btn-close-modal" onclick="closeModal('profileModal')">✕</button>
+      </div>
+      <div class="modal-body" style="display:flex; flex-direction:column; gap:1.25rem;">
+        <!-- Profile info & Edit Form -->
+        <form id="profileForm" onsubmit="handleProfileUpdate(event)">
+          <div style="font-weight:700; color:var(--text-accent); font-size:0.95rem; margin-bottom:0.75rem; border-bottom:1px solid var(--border-subtle); padding-bottom:0.4rem;">
+            Shaxsiy ma'lumotlar
+          </div>
+          <div class="form-group">
+            <label class="form-label">F.I.Sh. (To'liq ism) *</label>
+            <input type="text" class="form-control" id="profileFullName" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Elektron pochta (Email)</label>
+            <input type="email" class="form-control" id="profileEmail">
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Login</label>
+              <input type="text" class="form-control" id="profileUsername" disabled style="opacity:0.6; cursor:not-allowed;">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rol</label>
+              <input type="text" class="form-control" id="profileRole" disabled style="opacity:0.6; cursor:not-allowed;">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm" style="margin-top:0.5rem;">Ma'lumotlarni saqlash</button>
+        </form>
+
+        <!-- Change Password Form -->
+        <form id="changePasswordForm" onsubmit="handleChangePassword(event)" style="border-top:1px solid var(--border-subtle); padding-top:1rem;">
+          <div style="font-weight:700; color:var(--status-late); font-size:0.95rem; margin-bottom:0.75rem; border-bottom:1px solid var(--border-subtle); padding-bottom:0.4rem;">
+            Parolni o'zgartirish
+          </div>
+          <div class="form-group">
+            <label class="form-label">Joriy parol *</label>
+            <input type="password" class="form-control" id="currentPasswordInput" required placeholder="Hozirgi parolingiz">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Yangi parol * (kamida 6 ta belgi)</label>
+            <input type="password" class="form-control" id="newPasswordInput" required minlength="6" placeholder="Yangi kuchli parol">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Yangi parolni tasdiqlang *</label>
+            <input type="password" class="form-control" id="confirmPasswordInput" required minlength="6" placeholder="Yangi parolni qaytadan kiriting">
+          </div>
+          <button type="submit" class="btn btn-secondary btn-sm" style="margin-top:0.5rem; background:rgba(245,158,11,0.15); color:var(--status-late); border-color:var(--status-late);">
+            Parolni yangilash
+          </button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('profileModal')">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/attendance.js"></script>
+  <script src="js/students.js"></script>
+  <script src="js/teachers.js"></script>
+  <script src="js/groups.js"></script>
+
+  <script>
+    // Navigation and View Management
+    function switchView(viewName) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+      const targetSection = document.getElementById(`view-${viewName}`);
+      const targetNav = document.querySelector(`.nav-item[data-view="${viewName}"]`);
+      const heading = document.getElementById('pageHeadingTitle');
+
+      if (targetSection) targetSection.classList.add('active');
+      if (targetNav) targetNav.classList.add('active');
+
+      const titles = {
+        dashboard: 'Bosh sahifa & Tahlillar',
+        attendance: 'Davomatni qayd etish',
+        students: 'Talabalar bazasi',
+        teachers: "O'qituvchilar tarkibi",
+        groups: 'Akademik guruhlar'
+      };
+      if (heading) heading.textContent = titles[viewName] || 'Davomat Tizimi';
+
+      // Load view-specific data
+      if (viewName === 'dashboard') loadDashboardData();
+      else if (viewName === 'attendance') initAttendanceView();
+      else if (viewName === 'students') loadStudentsView();
+      else if (viewName === 'teachers') loadTeachersView();
+      else if (viewName === 'groups') loadGroupsView();
+
+      // Close mobile sidebar if open
+      closeSidebar();
+    }
+
+    function closeSidebar() {
+      const sidebar = document.getElementById('appSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (sidebar) sidebar.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('active');
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('appSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      const layout = document.querySelector('.app-layout');
+      
+      if (window.innerWidth <= 768) {
+        if (sidebar) {
+          const isOpen = sidebar.classList.toggle('open');
+          if (backdrop) backdrop.classList.toggle('active', isOpen);
+        }
+      } else {
+        if (layout) {
+          const isCollapsed = layout.classList.toggle('sidebar-collapsed');
+          try { localStorage.setItem('sidebar_collapsed', isCollapsed ? 'true' : 'false'); } catch (e) {}
+        }
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) modal.classList.remove('open');
+    }
+
+    // Set today's date formatted
+    document.addEventListener('DOMContentLoaded', () => {
+      const dateEl = document.getElementById('currentDateText');
+      if (dateEl) {
+        const now = new Date();
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        dateEl.textContent = now.toLocaleDateString('uz-UZ', options);
+      }
+
+      // Restore collapsed sidebar state on laptop/desktop
+      try {
+        if (localStorage.getItem('sidebar_collapsed') === 'true' && window.innerWidth > 768) {
+          document.querySelector('.app-layout')?.classList.add('sidebar-collapsed');
+        }
+      } catch (e) {}
+
+      // Check if user is logged in; if not, pre-fill demo admin credentials in memory
+      if (!api.getCurrentUser()) {
+        api.login('admin', 'Admin123!').then(() => {
+          initAuthUI();
+          loadDashboardData();
+        }).catch(() => {
+          loadDashboardData();
+        });
+      } else {
+        loadDashboardData();
+      }
+    });
+  </script>
+</body>
+</html>

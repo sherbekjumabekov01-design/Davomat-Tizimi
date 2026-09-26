@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guruhlar - Davomat Tizimi</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+  <div style="max-width:1200px; margin:2rem auto; padding:0 1.5rem;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <a href="../index.html" class="btn btn-secondary btn-sm">← Bosh sahifaga qaytish</a>
+        <h2 style="font-size:1.5rem; font-weight:800; color:#FFFFFF;">Akademik Guruhlar</h2>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openAddGroupModal()">+ Yangi guruh yaratish</button>
+    </div>
+
+    <div class="card">
+      <div class="stats-grid" id="groupsGridContainer">
+        <div style="color:var(--text-muted); text-align:center; padding:3rem; grid-column:1/-1;">Yuklanmoqda...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group Add/Edit Modal -->
+  <div class="modal-backdrop" id="groupModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="groupModalTitle">Yangi guruh</h3>
+        <button class="btn-close-modal" onclick="closeModal('groupModal')">✕</button>
+      </div>
+      <form id="groupForm" onsubmit="handleGroupFormSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="groupFormId">
+          <div class="form-group">
+            <label class="form-label">Guruh nomi *</label>
+            <input type="text" class="form-control" id="groupFormName" required placeholder="Masalan: TATU-210">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Yo'nalish / Ta'rif</label>
+            <input type="text" class="form-control" id="groupFormDescription" placeholder="Dasturiy injiniring yo'nalishi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bosqich (Kurs)</label>
+            <input type="number" class="form-control" id="groupFormCourseYear" min="1" max="6" value="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Xona / Auditoriya raqami</label>
+            <input type="text" class="form-control" id="groupFormRoom" placeholder="304-xona">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('groupModal')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/groups.js"></script>
+  <script>
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function switchView(view) {
+      if (view === 'attendance') window.location.href = 'attendance.html';
+      else window.location.href = '../index.html';
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      loadGroupsView();
+    });
+  </script>
+</body>
+</html>
