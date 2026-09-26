@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/", "destination": "/Frontend/index.html" },
+    { "source": "/css/(.*)", "destination": "/Frontend/css/$1" },
+    { "source": "/js/(.*)", "destination": "/Frontend/js/$1" },
+    { "source": "/pages/(.*)", "destination": "/Frontend/pages/$1" },
+    { "source": "/assets/(.*)", "destination": "/Frontend/assets/$1" },
+    { "source": "/login", "destination": "/Frontend/pages/login.html" },
+    { "source": "/attendance", "destination": "/Frontend/pages/attendance.html" },
+    { "source": "/groups", "destination": "/Frontend/pages/groups.html" },
+    { "source": "/students", "destination": "/Frontend/pages/students.html" },
+    { "source": "/teachers", "destination": "/Frontend/pages/teachers.html" },
+    { "source": "/Frontend/(.*)", "destination": "/Frontend/$1" }
+  ]
+}
