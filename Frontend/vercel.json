@@ -8,6 +8,9 @@
     { "source": "/attendance", "destination": "/pages/attendance.html" },
     { "source": "/groups", "destination": "/pages/groups.html" },
     { "source": "/students", "destination": "/pages/students.html" },
-    { "source": "/teachers", "destination": "/pages/teachers.html" }
+    { "source": "/teachers", "destination": "/pages/teachers.html" },
+    { "source": "/Frontend", "destination": "/index.html" },
+    { "source": "/Frontend/(.*)", "destination": "/$1" }
   ]
 }
+
