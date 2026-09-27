@@ -4,21 +4,28 @@
 
 function checkAuthGuard() {
   const path = window.location.pathname.toLowerCase();
-  const isLoginPage = path.includes('login.html');
+  const isLoginPage = path.includes('login');
   const user = api.getCurrentUser();
   const token = localStorage.getItem(API_CONFIG.STORAGE_KEY);
 
   if (!token || !user) {
     if (!isLoginPage) {
-      // Determine relative path to login.html
-      const redirectPath = path.includes('/pages/') ? 'login.html' : 'pages/login.html';
+      let redirectPath = 'pages/login.html';
+      if (path.includes('/pages/')) {
+        redirectPath = 'login.html';
+      } else if (window.location.protocol !== 'file:') {
+        redirectPath = '/login';
+      }
       window.location.replace(redirectPath);
       return false;
     }
   } else {
-    // If user is already authenticated and visits login page, redirect to index
+    // If user is already authenticated and visits login page, redirect to dashboard
     if (isLoginPage) {
-      window.location.replace('../index.html');
+      const homePath = window.location.protocol === 'file:'
+        ? (path.includes('/pages/') ? '../index.html' : 'index.html')
+        : '/';
+      window.location.replace(homePath);
       return false;
     }
   }

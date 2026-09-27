@@ -26,7 +26,13 @@ const API_CONFIG = {
   })(),
   STORAGE_KEY: 'davomat_auth_token',
   USER_KEY: 'davomat_user_info',
-  IS_DEMO_ACTIVE: false
+  IS_DEMO_ACTIVE: false,
+  USE_MOCK: (() => {
+    if (localStorage.getItem('davomat_api_url') || window.DAVOMAT_API_URL) return false;
+    const origin = window.location.origin || '';
+    if (origin.includes(':5041') || origin.includes(':7003')) return false;
+    return true;
+  })()
 };
 
 // Toast Notifications Helper
@@ -82,37 +88,81 @@ const MockDb = {
 
   getGroups() {
     return this.getStorage('groups', [
-      { id: 1, name: 'G1', courseName: 'Foundation - C++,Python', teacherName: 'Abdulhayev Jasur', price: '695 000 UZS', scheduleTime: 'Toq kunlar • 14:00', roomNumber: '6-xona', capacity: 20, dateRange: '29.04.2026 – 29.02.2028', branch: "IT LIVE o'quv markazi", lessonDaysType: 'Odd', studentsCount: 9 },
-      { id: 2, name: 'Frontend-Pro', courseName: 'Frontend React & Vue', teacherName: 'Karimov Bobur', price: '750 000 UZS', scheduleTime: 'Juft kunlar • 16:00', roomNumber: '4-xona', capacity: 18, dateRange: '01.05.2026 – 01.11.2027', branch: "IT LIVE o'quv markazi", lessonDaysType: 'Even', studentsCount: 12 },
-      { id: 3, name: 'G-3', courseName: 'Python Backend Django', teacherName: 'Rahmonov Sardor', price: '720 000 UZS', scheduleTime: 'Har kuni • 18:00', roomNumber: '2-xona', capacity: 15, dateRange: '10.05.2026 – 10.12.2027', branch: "IT LIVE o'quv markazi", lessonDaysType: 'Daily', studentsCount: 10 },
-      { id: 4, name: 'G-2', courseName: 'Grafik Dizayn & UI/UX', teacherName: 'Abdulhayev Jasur', price: '650 000 UZS', scheduleTime: 'Toq kunlar • 10:00', roomNumber: '5-xona', capacity: 16, dateRange: '15.05.2026 – 15.01.2028', branch: "IT LIVE o'quv markazi", lessonDaysType: 'Odd', studentsCount: 8 }
+      { id: 1, name: 'G1', courseName: 'Foundation - C++,Python', description: 'Foundation dasturlash asoslari kursi', teacherName: 'Abdulhayev Jasur', price: '695 000 UZS', scheduleTime: 'Toq kunlar • 14:00', roomNumber: '6-xona', capacity: 20, courseYear: 1, dateRange: '29.04.2026 – 29.02.2028', branch: "IT LIVE o'quv markazi", lessonDaysType: 'Odd', studentsCount: 9 },
+      { id: 2, name: 'Frontend-Pro', courseName: 'Frontend React & Vue', description: 'Zamonaviy Frontend veb dasturlash kursi', teacherName: 'Karimov Bobur', price: '750 000 UZS', scheduleTime: 'Juft kunlar • 16:00', roomNumber: '4-xona', capacity: 18, courseYear: 2, dateRange: '01.05.2026 – 01.11.2027', branch: "IT LIVE o'quv markazi", lessonDaysType: 'Even', studentsCount: 12 },
+      { id: 3, name: 'G-3', courseName: 'Python Backend Django', description: 'Python, Django va REST API arxitekturasi', teacherName: 'Rahmonov Sardor', price: '720 000 UZS', scheduleTime: 'Har kuni • 18:00', roomNumber: '2-xona', capacity: 15, courseYear: 1, dateRange: '10.05.2026 – 10.12.2027', branch: "IT LIVE o'quv markazi", lessonDaysType: 'Daily', studentsCount: 10 },
+      { id: 4, name: 'G-2', courseName: 'Grafik Dizayn & UI/UX', description: 'Figma va zamonaviy interfeys dizayni', teacherName: 'Abdulhayev Jasur', price: '650 000 UZS', scheduleTime: 'Toq kunlar • 10:00', roomNumber: '5-xona', capacity: 16, courseYear: 1, dateRange: '15.05.2026 – 15.01.2028', branch: "IT LIVE o'quv markazi", lessonDaysType: 'Odd', studentsCount: 8 }
     ]);
   },
 
-  getStudents(groupId = null) {
+  getStudents(groupId = null, search = null, status = null) {
     let list = this.getStorage('students', [
-      { id: 1, fullName: 'Abduganiyev Abdulvoris', phone: '(99) 321-31-50', groupId: 1, groupName: 'G1', coins: 45, status: 'Active' },
-      { id: 2, fullName: 'Abduhakimov Ismoil', phone: '(90) 400-15-88', groupId: 1, groupName: 'G1', coins: 30, status: 'Active' },
-      { id: 3, fullName: 'Boymurodov Sarvar', phone: '(94) 580-01-79', groupId: 1, groupName: 'G1', coins: 60, status: 'Active' },
-      { id: 4, fullName: 'Jamoliddinov Javohir', phone: '(33) 856-44-04', groupId: 1, groupName: 'G1', coins: 25, status: 'Active' },
-      { id: 5, fullName: 'Keldibekova Sabina', phone: '(33) 488-21-99', groupId: 1, groupName: 'G1', coins: 50, status: 'Active' },
-      { id: 6, fullName: 'Kunarboyev Jasurbek', phone: '(91) 123-45-67', groupId: 1, groupName: 'G1', coins: 40, status: 'Active' },
-      { id: 7, fullName: 'Mamatov Azizbek', phone: '(93) 765-43-21', groupId: 1, groupName: 'G1', coins: 35, status: 'Active' },
-      { id: 8, fullName: 'Normurodov Diyorbek', phone: '(97) 998-11-22', groupId: 1, groupName: 'G1', coins: 20, status: 'Active' },
-      { id: 9, fullName: 'Oripov Bexruz', phone: '(99) 555-66-77', groupId: 1, groupName: 'G1', coins: 15, status: 'Active' }
+      { id: 1, fullName: 'Abduganiyev Abdulvoris', studentCode: 'STD-21001', phone: '(99) 321-31-50', groupId: 1, groupName: 'G1', coins: 45, status: 'Active', attendanceRate: 94, createdAt: '2026-02-10T10:00:00Z', parentName: 'Abduganiyev Vohid', parentPhone: '(99) 321-31-55', email: 'abdulvoris@gmail.com' },
+      { id: 2, fullName: 'Abduhakimov Ismoil', studentCode: 'STD-21002', phone: '(90) 400-15-88', groupId: 1, groupName: 'G1', coins: 30, status: 'Active', attendanceRate: 88, createdAt: '2026-02-12T11:00:00Z', parentName: 'Abduhakimov Akrom', parentPhone: '(90) 400-15-90', email: 'ismoil@gmail.com' },
+      { id: 3, fullName: 'Boymurodov Sarvar', studentCode: 'STD-21003', phone: '(94) 580-01-79', groupId: 1, groupName: 'G1', coins: 60, status: 'Active', attendanceRate: 98, createdAt: '2026-02-15T09:30:00Z', parentName: 'Boymurodov Shavkat', parentPhone: '(94) 580-01-80', email: 'sarvar@gmail.com' },
+      { id: 4, fullName: 'Jamoliddinov Javohir', studentCode: 'STD-21004', phone: '(33) 856-44-04', groupId: 1, groupName: 'G1', coins: 25, status: 'Active', attendanceRate: 75, createdAt: '2026-02-18T14:00:00Z', parentName: 'Jamoliddinov Dilshod', parentPhone: '(33) 856-44-10', email: 'javohir@gmail.com' },
+      { id: 5, fullName: 'Keldibekova Sabina', studentCode: 'STD-21005', phone: '(33) 488-21-99', groupId: 1, groupName: 'G1', coins: 50, status: 'Active', attendanceRate: 92, createdAt: '2026-02-20T10:15:00Z', parentName: 'Keldibekova Nodira', parentPhone: '(33) 488-21-00', email: 'sabina@gmail.com' },
+      { id: 6, fullName: 'Kunarboyev Jasurbek', studentCode: 'STD-21006', phone: '(91) 123-45-67', groupId: 1, groupName: 'G1', coins: 40, status: 'Active', attendanceRate: 85, createdAt: '2026-02-22T16:00:00Z', parentName: 'Kunarboyev Otabek', parentPhone: '(91) 123-45-70', email: 'jasur@gmail.com' },
+      { id: 7, fullName: 'Mamatov Azizbek', studentCode: 'STD-21007', phone: '(93) 765-43-21', groupId: 1, groupName: 'G1', coins: 35, status: 'Active', attendanceRate: 90, createdAt: '2026-02-25T12:00:00Z', parentName: 'Mamatov Ulugbek', parentPhone: '(93) 765-43-25', email: 'azizbek@gmail.com' },
+      { id: 8, fullName: 'Normurodov Diyorbek', studentCode: 'STD-21008', phone: '(97) 998-11-22', groupId: 1, groupName: 'G1', coins: 20, status: 'Frozen', attendanceRate: 65, createdAt: '2026-03-01T09:00:00Z', parentName: 'Normurodov Farhod', parentPhone: '(97) 998-11-30', email: 'diyorbek@gmail.com' },
+      { id: 9, fullName: 'Oripov Bexruz', studentCode: 'STD-21009', phone: '(99) 555-66-77', groupId: 1, groupName: 'G1', coins: 15, status: 'Active', attendanceRate: 80, createdAt: '2026-03-05T15:30:00Z', parentName: 'Oripov Tohir', parentPhone: '(99) 555-66-80', email: 'bexruz@gmail.com' }
     ]);
     if (groupId) {
       list = list.filter(s => s.groupId === parseInt(groupId));
     }
+    if (status) {
+      list = list.filter(s => String(s.status).toLowerCase() === String(status).toLowerCase());
+    }
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter(s =>
+        (s.fullName && s.fullName.toLowerCase().includes(q)) ||
+        (s.studentCode && s.studentCode.toLowerCase().includes(q)) ||
+        (s.phone && s.phone.toLowerCase().includes(q))
+      );
+    }
     return list;
   },
 
-  getTeachers() {
-    return this.getStorage('teachers', [
-      { id: 1, fullName: 'Abdulhayev Jasur', phone: '(90) 123-45-67', subject: 'Foundation & C++', groupsCount: 2, status: 'Active' },
-      { id: 2, fullName: 'Karimov Bobur', phone: '(91) 987-65-43', subject: 'Frontend Web Development', groupsCount: 1, status: 'Active' },
-      { id: 3, fullName: 'Rahmonov Sardor', phone: '(93) 456-78-90', subject: 'Python & Django Backend', groupsCount: 1, status: 'Active' }
+  getTeachers(search = null) {
+    let list = this.getStorage('teachers', [
+      { id: 1, fullName: 'Abdulhayev Jasur', email: 'jasur@itlive.uz', phone: '(90) 123-45-67', subject: 'Foundation & C++', groupsCount: 2, groupNames: ['G1', 'G-2'], status: 'Active' },
+      { id: 2, fullName: 'Karimov Bobur', email: 'bobur@itlive.uz', phone: '(91) 987-65-43', subject: 'Frontend Web Development', groupsCount: 1, groupNames: ['Frontend-Pro'], status: 'Active' },
+      { id: 3, fullName: 'Rahmonov Sardor', email: 'sardor@itlive.uz', phone: '(93) 456-78-90', subject: 'Python & Django Backend', groupsCount: 1, groupNames: ['G-3'], status: 'Active' }
     ]);
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter(t =>
+        (t.fullName && t.fullName.toLowerCase().includes(q)) ||
+        (t.subject && t.subject.toLowerCase().includes(q)) ||
+        (t.email && t.email.toLowerCase().includes(q))
+      );
+    }
+    return list;
+  },
+
+  getAttendanceRecords() {
+    return this.getStorage('recent_attendance', [
+      { id: 1, studentName: 'Boymurodov Sarvar', studentCode: 'STD-21003', groupName: 'G1', date: '2026-09-27T09:15:00', status: 'Present', statusText: 'Bor edi', note: 'Vaqtida keldi', markedBy: 'Abdulhayev Jasur' },
+      { id: 2, studentName: 'Abduganiyev Abdulvoris', studentCode: 'STD-21001', groupName: 'G1', date: '2026-09-27T09:16:00', status: 'Present', statusText: 'Bor edi', note: '', markedBy: 'Abdulhayev Jasur' },
+      { id: 3, studentName: 'Keldibekova Sabina', studentCode: 'STD-21005', groupName: 'G1', date: '2026-09-27T09:18:00', status: 'Present', statusText: 'Bor edi', note: '+5 coin berildi', markedBy: 'Abdulhayev Jasur' },
+      { id: 4, studentName: 'Jamoliddinov Javohir', studentCode: 'STD-21004', groupName: 'G1', date: '2026-09-27T09:25:00', status: 'Late', statusText: 'Kechikdi', note: '10 daqiqa kechikdi', markedBy: 'Abdulhayev Jasur' },
+      { id: 5, studentName: 'Abduhakimov Ismoil', studentCode: 'STD-21002', groupName: 'G1', date: '2026-09-27T09:30:00', status: 'Absent', statusText: "Kelmadi", note: 'Sababsiz kelmadi', markedBy: 'Abdulhayev Jasur' },
+      { id: 6, studentName: 'Kunarboyev Jasurbek', studentCode: 'STD-21006', groupName: 'G1', date: '2026-09-26T14:10:00', status: 'Present', statusText: 'Bor edi', note: '', markedBy: 'Abdulhayev Jasur' },
+      { id: 7, studentName: 'Mamatov Azizbek', studentCode: 'STD-21007', groupName: 'G1', date: '2026-09-26T14:12:00', status: 'Present', statusText: 'Bor edi', note: '', markedBy: 'Abdulhayev Jasur' },
+      { id: 8, studentName: 'Oripov Bexruz', studentCode: 'STD-21009', groupName: 'G1', date: '2026-09-25T14:05:00', status: 'Present', statusText: 'Bor edi', note: '', markedBy: 'Abdulhayev Jasur' }
+    ]);
+  },
+
+  getStudentAttendanceHistory(studentId) {
+    return [
+      { date: '2026-09-25', groupName: 'G1', status: 'Present', note: "Darsda to'liq qatnashdi" },
+      { date: '2026-09-23', groupName: 'G1', status: 'Present', note: 'Faol qatnashdi' },
+      { date: '2026-09-21', groupName: 'G1', status: 'Present', note: 'Uy vazifasi bajarilgan' },
+      { date: '2026-09-18', groupName: 'G1', status: 'Late', note: '5 daqiqa kechikdi' },
+      { date: '2026-09-16', groupName: 'G1', status: 'Present', note: '' },
+      { date: '2026-09-14', groupName: 'G1', status: 'Present', note: '' }
+    ];
   },
 
   getAttendanceMap() {
@@ -167,15 +217,15 @@ const MockDb = {
     const lessonDays = [];
     for (let day = 1; day <= daysInMonth; day++) {
       const dt = new Date(y, m - 1, day);
-      const dow = dt.getDay(); // 0: Sun, 1: Mon, 2: Tue, 3: Wed, 4: Thu, 5: Fri, 6: Sat
+      const dow = dt.getDay();
 
       let isLesson = false;
       if (g.lessonDaysType === 'Odd') {
-        isLesson = (dow === 1 || dow === 3 || dow === 5); // Mon, Wed, Fri
+        isLesson = (dow === 1 || dow === 3 || dow === 5);
       } else if (g.lessonDaysType === 'Even') {
-        isLesson = (dow === 2 || dow === 4 || dow === 6); // Tue, Thu, Sat
+        isLesson = (dow === 2 || dow === 4 || dow === 6);
       } else {
-        isLesson = (dow !== 0); // Daily (Mon-Sat)
+        isLesson = (dow !== 0);
       }
 
       if (isLesson) {
@@ -259,13 +309,38 @@ const MockDb = {
     if (path === '/attendance/stats') {
       const students = this.getStudents();
       const groups = this.getGroups();
+      const teachers = this.getTeachers();
       return {
         totalStudents: students.length,
-        activeGroups: groups.length,
+        totalTeachers: teachers.length,
+        totalGroups: groups.length,
+        todayRate: 92,
         todayPresent: Math.max(1, students.length - 2),
+        todayLate: 1,
         todayAbsent: 2,
-        monthlyAttendanceRate: 89
+        todayExcused: 0,
+        weeklyStats: [
+          { date: '2026-09-21', rate: 94, present: 37, absent: 2 },
+          { date: '2026-09-22', rate: 89, present: 35, absent: 4 },
+          { date: '2026-09-23', rate: 96, present: 38, absent: 1 },
+          { date: '2026-09-24', rate: 92, present: 36, absent: 3 },
+          { date: '2026-09-25', rate: 97, present: 38, absent: 1 },
+          { date: '2026-09-26', rate: 90, present: 35, absent: 4 },
+          { date: '2026-09-27', rate: 95, present: 37, absent: 2 }
+        ]
       };
+    }
+
+    // Recent Attendance Records for Dashboard Table
+    if (path === '/attendance' && method === 'GET') {
+      return this.getAttendanceRecords();
+    }
+
+    // Student Attendance History
+    if (path.startsWith('/students/') && path.endsWith('/attendance')) {
+      const parts = path.split('/');
+      const id = parseInt(parts[2]);
+      return this.getStudentAttendanceHistory(id);
     }
 
     // Groups
@@ -274,7 +349,13 @@ const MockDb = {
       if (method === 'POST') {
         const body = JSON.parse(options.body || '{}');
         const groups = this.getGroups();
-        const newGroup = { ...body, id: Date.now(), studentsCount: 0, branch: "IT LIVE o'quv markazi" };
+        const newGroup = {
+          ...body,
+          id: Date.now(),
+          courseYear: body.courseYear || 1,
+          studentsCount: 0,
+          branch: "IT LIVE o'quv markazi"
+        };
         groups.push(newGroup);
         this.setStorage('groups', groups);
         return newGroup;
@@ -299,16 +380,41 @@ const MockDb = {
     // Students
     if (path === '/students') {
       if (method === 'GET') {
-        return this.getStudents(params.get('groupId'));
+        return this.getStudents(params.get('groupId'), params.get('search'), params.get('status'));
       }
       if (method === 'POST') {
         const body = JSON.parse(options.body || '{}');
         const students = this.getStudents();
-        const newS = { ...body, id: Date.now(), coins: 10, status: 'Active' };
+        const groups = this.getGroups();
+        const grp = groups.find(g => g.id === parseInt(body.groupId)) || {};
+        const newS = {
+          ...body,
+          id: Date.now(),
+          studentCode: body.studentCode || `STD-${Math.floor(10000 + Math.random() * 90000)}`,
+          groupName: grp.name || 'G1',
+          coins: 10,
+          status: body.status || 'Active',
+          attendanceRate: 100,
+          createdAt: new Date().toISOString()
+        };
         students.push(newS);
         this.setStorage('students', students);
         return newS;
       }
+    }
+    if (path.startsWith('/students/') && method === 'PUT') {
+      const id = parseInt(path.split('/')[2]);
+      const body = JSON.parse(options.body || '{}');
+      const students = this.getStudents();
+      const idx = students.findIndex(s => s.id === id);
+      if (idx !== -1) {
+        const groups = this.getGroups();
+        const grp = groups.find(g => g.id === parseInt(body.groupId)) || {};
+        students[idx] = { ...students[idx], ...body, groupName: grp.name || students[idx].groupName };
+        this.setStorage('students', students);
+        return students[idx];
+      }
+      return null;
     }
     if (path.startsWith('/students/') && method === 'DELETE') {
       const id = parseInt(path.split('/')[2]);
@@ -319,15 +425,39 @@ const MockDb = {
 
     // Teachers
     if (path === '/teachers') {
-      if (method === 'GET') return this.getTeachers();
+      if (method === 'GET') return this.getTeachers(params.get('search'));
       if (method === 'POST') {
         const body = JSON.parse(options.body || '{}');
         const teachers = this.getTeachers();
-        const newT = { ...body, id: Date.now(), groupsCount: 0, status: 'Active' };
+        const newT = {
+          ...body,
+          id: Date.now(),
+          groupsCount: (body.groupIds || []).length,
+          groupNames: body.groupNames || ['G1'],
+          status: 'Active'
+        };
         teachers.push(newT);
         this.setStorage('teachers', teachers);
         return newT;
       }
+    }
+    if (path.startsWith('/teachers/') && method === 'PUT') {
+      const id = parseInt(path.split('/')[2]);
+      const body = JSON.parse(options.body || '{}');
+      const teachers = this.getTeachers();
+      const idx = teachers.findIndex(t => t.id === id);
+      if (idx !== -1) {
+        teachers[idx] = { ...teachers[idx], ...body };
+        this.setStorage('teachers', teachers);
+        return teachers[idx];
+      }
+      return null;
+    }
+    if (path.startsWith('/teachers/') && method === 'DELETE') {
+      const id = parseInt(path.split('/')[2]);
+      const teachers = this.getTeachers().filter(t => t.id !== id);
+      this.setStorage('teachers', teachers);
+      return true;
     }
 
     // Attendance Matrix Grid
@@ -383,6 +513,18 @@ const MockDb = {
 
 // Fetch with automatic JWT Bearer token and seamless Vercel fallback
 async function fetchWithAuth(endpoint, options = {}) {
+  // If USE_MOCK is true, immediately serve from local database (no network lag or 404s on Vercel)
+  if (API_CONFIG.USE_MOCK) {
+    const mockRes = MockDb.handleMockRequest(endpoint, options);
+    if (mockRes !== null) {
+      if (!API_CONFIG.IS_DEMO_ACTIVE) {
+        API_CONFIG.IS_DEMO_ACTIVE = true;
+        console.log('Davomat Tizimi: Vercel Offline / Demo rejimida ishlamoqda');
+      }
+      return mockRes;
+    }
+  }
+
   const token = localStorage.getItem(API_CONFIG.STORAGE_KEY);
   const headers = {
     'Content-Type': 'application/json',
@@ -399,11 +541,16 @@ async function fetchWithAuth(endpoint, options = {}) {
     if (response.status === 401) {
       localStorage.removeItem(API_CONFIG.STORAGE_KEY);
       localStorage.removeItem(API_CONFIG.USER_KEY);
-      if (!window.location.pathname.includes('login.html')) {
+      if (!window.location.pathname.toLowerCase().includes('login')) {
         showToast('Sessiya muddati tugadi. Iltimos, qayta kiring.', 'error');
         setTimeout(() => {
           const path = window.location.pathname.toLowerCase();
-          const loginPath = path.includes('/pages/') ? 'login.html' : 'pages/login.html';
+          let loginPath = 'pages/login.html';
+          if (path.includes('/pages/')) {
+            loginPath = 'login.html';
+          } else if (window.location.protocol !== 'file:') {
+            loginPath = '/login';
+          }
           window.location.href = loginPath;
         }, 800);
       }
@@ -445,24 +592,27 @@ const api = {
   setApiUrl(url) {
     localStorage.setItem('davomat_api_url', url);
     API_CONFIG.BASE_URL = url.replace(/\/+$/, '');
+    API_CONFIG.USE_MOCK = false;
     showToast(`Backend API o'zgartirildi: ${API_CONFIG.BASE_URL}`, 'success');
   },
 
   // Auth
   async login(username, password) {
-    try {
-      const res = await fetch(`${API_CONFIG.BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        localStorage.setItem(API_CONFIG.STORAGE_KEY, data.token);
-        localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(data));
-        return data;
-      }
-    } catch {}
+    if (!API_CONFIG.USE_MOCK) {
+      try {
+        const res = await fetch(`${API_CONFIG.BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          localStorage.setItem(API_CONFIG.STORAGE_KEY, data.token);
+          localStorage.setItem(API_CONFIG.USER_KEY, JSON.stringify(data));
+          return data;
+        }
+      } catch {}
+    }
 
     // Fallback Mock Login (Works on Vercel out of the box)
     const mockUser = MockDb.handleMockRequest('/auth/login', {
@@ -483,7 +633,12 @@ const api = {
     localStorage.removeItem(API_CONFIG.STORAGE_KEY);
     localStorage.removeItem(API_CONFIG.USER_KEY);
     const path = window.location.pathname.toLowerCase();
-    const loginPath = path.includes('/pages/') ? 'login.html' : 'pages/login.html';
+    let loginPath = 'pages/login.html';
+    if (path.includes('/pages/')) {
+      loginPath = 'login.html';
+    } else if (window.location.protocol !== 'file:') {
+      loginPath = '/login';
+    }
     window.location.href = loginPath;
   },
 

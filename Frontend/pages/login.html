@@ -91,7 +91,7 @@
       </div>
 
       <div style="text-align:center; margin-top:1.5rem;">
-        <a href="../index.html" style="color:var(--text-accent); font-size:0.85rem; text-decoration:none;">
+        <a href="../index.html" id="linkToHome" style="color:var(--text-accent); font-size:0.85rem; text-decoration:none;">
           ← Asosiy boshqaruv paneliga o'tish
         </a>
       </div>
@@ -101,6 +101,11 @@
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
   <script>
+    if (window.location.protocol !== 'file:') {
+      const link = document.getElementById('linkToHome');
+      if (link) link.href = '/';
+    }
+
     function setDemo(u, p) {
       document.getElementById('loginUsername').value = u;
       document.getElementById('loginPassword').value = p;
@@ -120,8 +125,9 @@
         await api.login(u, p);
         showToast('Muvaffaqiyatli kirdingiz! Yo\'naltirilmoqda...', 'success');
         setTimeout(() => {
-          window.location.href = '../index.html';
-        }, 800);
+          const homeUrl = window.location.protocol === 'file:' ? '../index.html' : '/';
+          window.location.href = homeUrl;
+        }, 600);
       } catch (err) {
         showToast(err.message || 'Login yoki parol noto\'g\'ri', 'error');
         btn.disabled = false;
